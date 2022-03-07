@@ -1,0 +1,45 @@
+---
+- name: Preparing packages 
+  hosts: server
+  tasks:
+
+    - name: Updating packet lists
+      apt:
+        name: "*"
+        state: latest
+
+    - name: Installing required packages
+      package:
+        name:
+          - curl
+          - ca-certificates
+          - gnupg
+          - lsb-release
+    
+    - name: Adding Dockers GPG Key
+      apt_key:
+        url: http://download.docker.com/linux/debian/gpg
+          
+            #    - name: Adding Dockers GPG Key
+            #      shell:
+            #        cmd: curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+  
+    - name: Adding Dockers repository
+      shell:
+        cmd: echo \
+             "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian \
+             $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+    - name: Updating modified packet lists
+      apt:
+        name: "*"
+        state: latest
+
+    - name: Installing Docker-engine and CLI components
+      apt:
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+        state: latest
+
