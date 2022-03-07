@@ -1,0 +1,20 @@
+---
+- name: Setup UFW
+  hosts: server
+  remote_user: root
+
+  tasks:
+
+  - name: Default deny 
+    shell:
+      cmd: ufw default deny
+
+  - name: Enable Logging 
+    shell:
+      cmd: ufw logging on 
+
+  - name: Allow 80 Port TCP
+    community.general.ufw:
+      rule: allow
+      proto: tcp
+      to_port: '80' 

@@ -1,0 +1,27 @@
+---
+- name: Setup Docker httpd container
+  hosts: server
+  remote_user: root
+
+  tasks:
+
+  - name: Create /var/www/html
+    file:
+      path: /var/www/html
+      recurse: yes
+      state: directory
+
+  - name: Copy index.html
+    copy:
+      src: /etc/ansible/collection/files/index.html
+      dest: /var/www/html/index.html
+      force: yes
+      
+  - name: Pull Apache2 httpd image
+    community.docker.docker_container:
+      name: apache-httpd
+      image: httpd
+      volumes: 
+      - /var/www/html/:/usr/local/apache2/htdocs/
+      ports: 
+       - "80:80"

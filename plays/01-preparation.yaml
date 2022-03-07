@@ -1,6 +1,8 @@
 ---
 - name: Preparing packages 
   hosts: server
+  remote_user: root
+
   tasks:
 
     - name: Updating packet lists
@@ -15,7 +17,15 @@
           - ca-certificates
           - gnupg
           - lsb-release
-    
+          - ufw
+          - fail2ban
+          - python3
+          - pip
+
+    - name: PIP install docker
+      pip:
+        name: docker
+
     - name: Adding Dockers GPG Key
       apt_key:
         url: http://download.docker.com/linux/debian/gpg
