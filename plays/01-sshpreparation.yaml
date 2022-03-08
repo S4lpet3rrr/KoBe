@@ -5,30 +5,47 @@
 
   tasks:
 
-    - name: Remove SSH Host Keys
-      shell:
-        cmd: rm -f /etc/ssh/ssh_host_*
+  - name: Remove SSH Host Keys
+    shell:
+      cmd: rm -f /etc/ssh/ssh_host_*
 
-    - name: Regenerate SSH RSA Host Keys
-      shell:
-        cmd: ssh-keygen -t rsa -b 4096 -f /etc/ssh/ssh_host_rsa_key -N ""
+  - name: Regenerate SSH RSA Host Keys
+    shell:
+      cmd: ssh-keygen -t rsa -b 4096 -f /etc/ssh/ssh_host_rsa_key -N ""
 
-    - name: Regenerate SSH ED25519 Host Keys
-      shell:
-        cmd: ssh-keygen -t ed25519 -f /etc/ssh/ssh_host_ed25519_key -N ""
+  - name: Regenerate SSH ED25519 Host Keys
+    shell:
+      cmd: ssh-keygen -t ed25519 -f /etc/ssh/ssh_host_ed25519_key -N ""
 
-    - name: Enable RSA ED25519 Host Keys
-      shell:
-        cmd: sed -i 's/^\#HostKey \/etc\/ssh\/ssh_host_\(rsa\|ed25519\)_key$/HostKey \/etc\/ssh\/ssh_host_\1_key/g' /etc/ssh/sshd_config
-     
-    - name: Remove Diffie Hellman Moduli
-      shell:
-        cmd: awk '$5 >= 3071' /etc/ssh/moduli > /etc/ssh/moduli.safe && mv -f /etc/ssh/moduli.safe /etc/ssh/moduli
+  - name: Enable RSA ED25519 Host Keys
+    shell:
+      cmd: sed -i 's/^\#HostKey \/etc\/ssh\/ssh_host_\(rsa\|ed25519\)_key$/HostKey \/etc\/ssh\/ssh_host_\1_key/g' /etc/ssh/sshd_config
+   
+  - name: Remove Diffie Hellman Moduli
+    shell:
+      cmd: awk '$5 >= 3071' /etc/ssh/moduli > /etc/ssh/moduli.safe && mv -f /etc/ssh/moduli.safe /etc/ssh/moduli
 
-    - name: Restrict key exchange algo, cipher and mac algo
-      shell:
-        cmd: echo -e "\n# Restrict key exchange, cipher, and MAC algorithms, as per sshaudit.com\n# hardening guide.\nKexAlgorithms curve25519-sha256,curve25519-sha256@libssh.org,diffie-hellman-group16-sha512,diffie-hellman-group18-sha512,diffie-hellman-group-exchange-sha256\nCiphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes192-ctr,aes128-ctr\nMACs hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.com,umac-128-etm@openssh.com\nHostKeyAlgorithms ssh-ed25519,ssh-ed25519-cert-v01@openssh.com,rsa-sha2-256,rsa-sha2-512,rsa-sha2-256-cert-v01@openssh.com,rsa-sha2-512-cert-v01@openssh.com" >> /etc/ssh/sshd_config
+  - name: Restrict key exchange algo, cipher and mac algo
+    blockinfile:
+      path: /etc/ssh/sshd_config
+      insertafter:
+      state: present   
+      block: |
+        # Restrict key exchange, cipher, and MAC algorithms, as per sshaudit.com
+        # hardening guide.
+        KexAlgorithms curve25519-sha256,curve25519-sha256@libssh.org,diffie-hellman-group16-sha512,diffie-hellman-group18-sha512,diffie-hellman-group-exchange-sha256
+        Ciphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes192-ctr,aes128-ctr
+        MACs hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.com,umac-128-etm@openssh.com
+        HostKeyAlgorithms ssh-ed25519,ssh-ed25519-cert-v01@openssh.com,rsa-sha2-256,rsa-sha2-512,rsa-sha2-256-cert-v01@openssh.com,rsa-sha2-512-cert-v01@openssh.com
 
-    - name:
-      shell:
-	cmd: systemctl restart ssh
+#      shell:
+#        cmd: | 
+#	        echo -e "\n# Restrict key exchange, cipher, and MAC algorithms, as per sshaudit.com\n# hardening guide.\nKexAlgorithms 
+#          curve25519-sha256,curve25519-sha256@libssh.org,diffie-hellman-group16-sha512,diffie-hellman-group18-sha512,diffie-hellman-group-exchange-sha256\nCiphers
+#          chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes192-ctr,aes128-ctr\nMACs 
+#          hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.com,umac-128-etm@openssh.com\nHostKeyAlgorithms ssh-ed25519,ssh-ed25519-cert-v01@openssh.com,
+#          rsa-sha2-256,rsa-sha2-512,rsa-sha2-256-cert-v01@openssh.com,rsa-sha2-512-cert-v01@openssh.com" >> /etc/ssh/sshd_config
+
+  - name: Restart SSHD 
+    shell:
+      cmd: systemctl restart ssh
