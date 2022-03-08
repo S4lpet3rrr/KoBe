@@ -20,11 +20,4 @@
       to_port: '80'
 
   - name: Allow 22 Port TCP
-    community.general.ufw:
-      rule: allow
-      proto: tcp
-      to_port: '22'
-
-  - name: Enable & start UFW
-    community.general.ufw:
-      state: enabled 
+    community.general.ufw 

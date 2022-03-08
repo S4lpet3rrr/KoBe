@@ -1,0 +1,28 @@
+---
+- name: Using the playbooks to provision the application
+  hosts: server
+  remote_user: root
+
+  tasks:
+
+    - name: Run the preparation Playbook
+        import_playbook: 01-preparation.yaml
+
+    - name: Run the preparation Playbook
+        import_playbook: 01-sshpreparation.yaml
+
+    - name: Run the preparation Playbook
+        import_playbook: 02-ufw.yaml
+
+    - name: Run the preparation Playbook
+        import_playbook: 03-fail2ban.yaml
+
+    - name: Run the preparation Playbook
+        import_playbook: 04-docker.yaml
+
+    - name: Run the preparation Playbook
+        import_playbook: 04.dockerfile.yaml
+
+    - name: Run the preparation Playbook
+        import_playbook:
+
