@@ -1,4 +1,4 @@
-# KoBe
+# KoBe - Komponentenbasierte Bereitstellung
 
 University Project
 

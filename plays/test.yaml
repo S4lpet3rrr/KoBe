@@ -1,0 +1,31 @@
+---
+
+- name: testplaybook
+  hosts: server
+  remote_user: root
+  
+  tasks:
+
+    - name: Add Issue.net
+      blockinfile:
+        path: /etc/issue.net
+        block: |
+          ********************************************************************
+          *                                                                  *
+          * This system is for the use of authorized users only.  Usage of   *
+          * this system may be monitored and recorded by system personnel.   *
+          *                                                                  *
+          * Anyone using this system expressly consents to such monitoring   *
+          * and is advised that if such monitoring reveals possible          *
+          * evidence of criminal activity, system personnel may provide the  *
+          * evidence from such monitoring to law enforcement officials.      *
+          *                                                                  *
+          ********************************************************************
+    
+    - name: Enable Issue.net within sshd_config
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^#Banner none'
+        insertafter: '^#Banner none'
+        line: Banner /etc/issue.net  
+
