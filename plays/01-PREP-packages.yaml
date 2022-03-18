@@ -37,26 +37,6 @@
         repo: deb https://download.docker.com/linux/debian bullseye stable
         state: present
 
-#    - name: Adding Dockers Repository
-#      lineinfile:
-#        path: /etc/apt/sources.list.d/docker.list
-#        line: 'deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian bullseye stable'
-#        state: present 
-#        create: yes
-
-#    - name: Add signing key
-#      ansible.builtin.apt_key:
-#        url: "https://download.docker.com/linux/{{ ansible_distribution | lower }}/gpg"
-#        state: present
-
-#    - name: Adding Dockers GPG Key
-#      shell:
-#        cmd: curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg	
-
-#    - name: Adding Dockers GPG Key
-#      apt_key:
-#        url: http://download.docker.com/linux/debian/gpg
-
     - name: Updating modified packet lists
       apt:
         name: "*"
@@ -70,25 +50,3 @@
           - containerd.io
         state: latest
     
-    - name: Add Issue.net
-      blockinfile:
-        path: /etc/issue.net
-        block: |
-          ********************************************************************
-          *                                                                  *
-          * This system is for the use of authorized users only.  Usage of   *
-          * this system may be monitored and recorded by system personnel.   *
-          *                                                                  *
-          * Anyone using this system expressly consents to such monitoring   *
-          * and is advised that if such monitoring reveals possible          *
-          * evidence of criminal activity, system personnel may provide the  *
-          * evidence from such monitoring to law enforcement officials.      *
-          *                                                                  *
-          ********************************************************************
-
-    - name: Enable Issue.net within sshd_config
-      lineinfile:
-        path: /etc/ssh/sshd_config
-        regexp: '^#Banner none'
-        insertafter: '^#Banner none'
-        line: Banner /etc/issue.net
