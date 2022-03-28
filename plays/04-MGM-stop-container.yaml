@@ -1,7 +1,7 @@
 ---
 - name: Stop Docker Container apache-httd
   hosts: server
-  gather_facts:false
+  gather_facts: false
   remote_user: root
 
   tasks:

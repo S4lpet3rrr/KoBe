@@ -1,7 +1,7 @@
 ---
 - name: Using the playbooks to provision the application
   hosts: server
-  gather_facts:false
+  gather_facts: false
 
   tasks:
 
