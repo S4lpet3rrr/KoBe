@@ -1,9 +1,10 @@
 ---
 - name: Stop Docker Container apache-httd
   hosts: server
+  gather_facts:false
   remote_user: root
 
-  task:
+  tasks:
 
     - name: Stopping the Container...
       docker_container:

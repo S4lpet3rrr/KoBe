@@ -1,9 +1,10 @@
 ---
 - name: Delete Docker Container apache-httd
   hosts: server
+  gather_facts:false
   remote_user: root
 
-  task:
+  tasks:
 
     - name: Deleting the Container...
       docker_container:

@@ -1,9 +1,10 @@
 ---
 - name: Start Docker Container apache-httd
   hosts: server
+  gather_facts:false
   remote_user: root
 
-  task:
+  tasks:
 
     - name: Starting the Container...
       docker_container:
