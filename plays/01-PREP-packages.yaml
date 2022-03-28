@@ -9,19 +9,26 @@
       apt:
         name: "*"
         state: latest
-
+    
+    - name: Dist Upgrade
+      apt:
+        update_cache: yes
+        upgrade: dist
+        autoremove: yes
+   
     - name: Installing required packages
-      package:
-        name:
-          - apt-transport-https
-          - curl
-          - ca-certificates
-          - gnupg
-          - lsb-release
-          - ufw
-          - fail2ban
-          - python3
-          - pip
+      apt:
+        pkg:
+        - apt-transport-https
+        - curl
+        - ca-certificates
+        - gnupg
+        - lsb-release
+        - ufw
+        - fail2ban
+        - python3
+        - pip
+        state: present
 
     - name: PIP install docker
       pip:
